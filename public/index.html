@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PenScribe - Blog Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        header h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin: 0;
+        }
+        
+        header p {
+            color: #7f8c8d;
+            margin: 10px 0 20px 0;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #dfe6e9;
+        }
+        
+        /* Blog grid styling to match dashboard */
+        .blogs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .blog-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .blog-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .blog-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        
+        .blog-excerpt {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 15px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .blog-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        /* Sort controls styling */
+        .sort-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .sort-controls h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sort-options span {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .sort-btn {
+            padding: 6px 15px;
+            background-color: #f7f9fa;
+            border: 1px solid #e6e9ed;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .sort-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        /* Loading spinner and messages */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .no-content {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            background-color: #f9fafb;
+            border-radius: 10px;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: #e74c3c;
+            background-color: #fadbd8;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>PenScribe</h1>
+                <p>Welcome to our blog platform! Here you can read articles by our authors and engage in discussions through comments.</p>
+            </div>
+            <div id="auth-controls" class="header-actions">
+                <a href="/login" class="btn-primary"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="/signup" class="btn-primary"><i class="fas fa-user-plus"></i> Sign Up</a>
+            </div>
+            <div id="user-controls" class="header-actions" style="display: none;">
+                <span id="username-display"></span>
+                <a href="/dashboard" class="btn-primary"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <button id="logout-btn" class="btn-secondary"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+        
+        <div class="sort-controls">
+            <h2>All Blogs</h2>
+            <div class="sort-options">
+                <span>Sort by:</span>
+                <button id="sort-date" class="sort-btn active">Date</button>
+                <button id="sort-comments" class="sort-btn">Comments</button>
+            </div>
+        </div>
+        
+        <div id="blogs-container" class="blogs-grid">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading blogs...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Checks if user is already logged in
+            fetch('/api/user')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json().then(data => {
+                            // User is logged in,then show user controls
+                            document.getElementById('auth-controls').style.display = 'none';
+                            document.getElementById('user-controls').style.display = 'flex';
+                            document.getElementById('username-display').textContent = 
+                                `${data.user.username} (${data.user.role})`;
+                            
+                            // Setup logout button
+                            document.getElementById('logout-btn').addEventListener('click', async () => {
+                                await fetch('/api/logout', { method: 'POST' });
+                                window.location.reload();
+                            });
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log('User not logged in, showing visitor view');
+                })
+                .finally(() => {
+                    // Always load blogs, regardless of authentication status
+                    loadBlogs('date');
+                    
+                    // Setup sort buttons
+                    const sortDateBtn = document.getElementById('sort-date');
+                    const sortCommentsBtn = document.getElementById('sort-comments');
+                    
+                    sortDateBtn.addEventListener('click', () => {
+                        sortDateBtn.classList.add('active');
+                        sortCommentsBtn.classList.remove('active');
+                        loadBlogs('date');
+                    });
+                    
+                    sortCommentsBtn.addEventListener('click', () => {
+                        sortCommentsBtn.classList.add('active');
+                        sortDateBtn.classList.remove('active');
+                        loadBlogs('comments');
+                    });
+                });
+        });
+        
+        async function loadBlogs(sortBy = 'date') {
+            try {
+                const blogsContainer = document.getElementById('blogs-container');
+                blogsContainer.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading blogs...</div>';
+                
+                const response = await fetch(`/api/blogs?sort=${sortBy}`);
+                const data = await response.json();
+                
+                blogsContainer.innerHTML = '';
+                
+                if (data.blogs.length === 0) {
+                    blogsContainer.innerHTML = '<p class="no-content">No blogs found.</p>';
+                    return;
+                }
+                
+                data.blogs.forEach(blog => {
+                    blogsContainer.appendChild(createBlogCard(blog));
+                });
+            } catch (error) {
+                console.error('Error loading blogs:', error);
+                document.getElementById('blogs-container').innerHTML = 
+                    '<p class="error-message">Error loading blogs. Please try again later.</p>';
+            }
+        }
+        
+        function createBlogCard(blog) {
+            const blogCard = document.createElement('div');
+            blogCard.className = 'blog-card';
+            
+            const formattedDate = new Date(blog.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            blogCard.innerHTML = `
+                <h3 class="blog-title">${escapeHtml(blog.title)}</h3>
+                <div class="blog-meta">
+                    <span class="blog-author"><i class="fas fa-user"></i> ${escapeHtml(blog.author_name)}</span>
+                    <span class="blog-date"><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                    <span class="blog-comments"><i class="fas fa-comments"></i> ${blog.comment_count} comments</span>
+                </div>
+                <div class="blog-excerpt">${getExcerpt(blog.content)}</div>
+                <div class="blog-actions">
+                    <a href="/blog/${blog.id}" class="btn-primary"><i class="fas fa-eye"></i> Read</a>
+                </div>
+            `;
+            
+            return blogCard;
+        }
+        
+        function getExcerpt(content) {
+            // Remove HTML tags and get plain text
+            const textContent = content.replace(/<[^>]*>/g, '');
+            // Limited to 150 characters
+            return escapeHtml(textContent.length > 150 ? textContent.substring(0, 150) + '...' : textContent);
+        }
+        
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

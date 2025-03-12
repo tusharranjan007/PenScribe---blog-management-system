@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - PenScribe</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .signup-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .signup-form {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 
+                0 15px 25px rgba(0, 0, 0, 0.3),
+                0 5px 10px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            transform: perspective(800px) rotateX(2deg);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+        
+        .signup-form:hover {
+            transform: perspective(800px) rotateX(0deg) translateY(-5px);
+            box-shadow: 
+                0 20px 30px rgba(0, 0, 0, 0.4),
+                0 10px 15px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        }
+        
+        .signup-form::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #6284ff, #ff0844, #ffb199);
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.5;
+            border-radius: 15px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #3498db, #5dade2);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.9rem;
+        }
+        
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .input-group input:focus, .input-group select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .input-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #2980b9, #3498db);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .auth-alternate {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .auth-alternate a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .auth-alternate a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid #e74c3c;
+            display: none;
+        }
+        
+        .role-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .role-options label {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .role-options label:hover {
+            background: #edf2f7;
+        }
+        
+        .role-options input[type="radio"] {
+            display: none;
+        }
+        
+        .role-options input[type="radio"]:checked + label {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: #3498db;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        /* Home link styling */
+        .home-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .home-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .home-link a:hover {
+            background-color: rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+       
+        <div class="home-link">
+            <a href="/"><i class="fas fa-home"></i> Back to Home</a>
+        </div>
+        
+        <h1>PenScribe</h1>
+        
+        <div class="signup-form">
+            <h2>Create an Account</h2>
+            <form id="signup-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Choose a username">
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a password">
+                </div>
+                <div class="input-group">
+                    <label>I want to be a:</label>
+                    <div class="role-options">
+                        <input type="radio" id="reader" name="role" value="reader" checked>
+                        <label for="reader">Reader</label>
+                        
+                        <input type="radio" id="author" name="role" value="author">
+                        <label for="author">Author</label>
+                    </div>
+                </div>
+                <div id="signup-error" class="error-message"></div>
+                <button type="submit" class="btn-primary">Sign Up</button>
+            </form>
+            <p class="auth-alternate">
+                Already have an account? <a href="/login">Log in</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const signupForm = document.getElementById('signup-form');
+            const errorElement = document.getElementById('signup-error');
+
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const role = document.querySelector('input[name="role"]:checked').value;
+                
+                try {
+                    const response = await fetch('/api/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, email, password, role })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Registration failed');
+                    }
+                    
+                    // Redirect to dashboard on successful signup
+                    window.location.href = '/dashboard';
+                } catch (error) {
+                    errorElement.textContent = error.message;
+                    errorElement.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

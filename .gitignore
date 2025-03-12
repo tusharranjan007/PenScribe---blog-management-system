@@ -1,0 +1,4 @@
+comments.db
+
+# Environment variables
+.env

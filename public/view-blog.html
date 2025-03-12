@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - PenScribe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Add jQuery for AJAX support -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+    <style>
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        header h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #username-display {
+            font-weight: 600;
+            color: #2c3e50;
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+        
+        /* Blog content styling */
+        #blog-content-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            min-height: 400px; /* Ensure consistent height */
+        }
+        
+        .blog-title {
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        
+        .blog-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .blog-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #34495e;
+        }
+        
+        .blog-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .blog-content h2, .blog-content h3 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .blog-content p {
+            margin-bottom: 20px;
+        }
+        
+        .blog-content ul, .blog-content ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        
+        .blog-content pre {
+            background-color: #f7f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        /* Comments section styling */
+        .comments-section {
+            margin-top: 50px;
+        }
+        
+        .comments-section h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        
+        .comment {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .comment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        .comment-timestamp {
+            color: #95a5a6;
+            font-size: 14px;
+        }
+        
+        .comment-content {
+            margin-bottom: 15px;
+            color: #34495e;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .comment-action {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #7f8c8d;
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+        
+        .comment-action:hover {
+            color: #3498db;
+        }
+        
+        .replies {
+            margin-top: 15px;
+            margin-left: 30px;
+            padding-left: 15px;
+            border-left: 2px solid #ecf0f1;
+        }
+        
+        .reply {
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+        }
+        
+        /* Comment form styling */
+        .comment-form {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comment-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e6e9ed;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 15px;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 15px;
+            transition: border-color 0.2s ease;
+        }
+        
+        .comment-form textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .comment-form .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .emoji-btn, .image-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            color: #7f8c8d;
+            transition: color 0.2s ease;
+        }
+        
+        .emoji-btn:hover, .image-btn:hover {
+            color: #3498db;
+        }
+        
+        .post-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        
+        .post-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 25px;
+            background-color: #f7f9fa;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            color: #7f8c8d;
+            border: 1px dashed #e6e9ed;
+        }
+        
+        .login-prompt a {
+            color: #3498db;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        /* Load more button */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .load-more-btn {
+            background-color: #f7f9fa;
+            color: #3498db;
+            border: 1px solid #e6e9ed;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .load-more-btn:hover {
+            background-color: #edf2f7;
+            transform: translateY(-2px);
+        }
+        
+        .load-more-btn.loading {
+            background-color: #edf2f7;
+            color: #7f8c8d;
+            pointer-events: none;
+        }
+        
+        /* Navigation */
+        .page-navigation {
+            margin-bottom: 30px;
+        }
+        
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+            gap: 8px;
+        }
+        
+        .nav-link:hover {
+            color: #2980b9;
+        }
+        
+        /* Edit forms */
+        #edit-form, .edit-form {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        
+        #edit-form textarea, .edit-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e6e9ed;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 10px;
+        }
+        
+        #edit-form button, .edit-form button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .save-edit-btn, .save-reply-edit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .cancel-edit-btn, .cancel-reply-edit-btn {
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+        }
+        
+        .save-edit-btn:hover, .save-reply-edit-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .cancel-edit-btn:hover, .cancel-reply-edit-btn:hover {
+            background-color: #dfe6e9;
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 30px;
+            color: #7f8c8d;
+        }
+        
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #7f8c8d;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PenScribe</h1>
+            <div class="user-info">
+                <span id="username-display"></span>
+                <button id="logout-btn" class="post-btn" style="display: none;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <a href="/login" id="login-btn" class="post-btn"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </div>
+        </header>
+        
+        <div class="page-navigation">
+            <a href="/dashboard" class="nav-link" id="dashboard-link" style="display: none;"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="/" class="nav-link" id="home-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+        
+        <div class="blog-container">
+            <div id="blog-content-container">
+                <!-- Blog content will be loaded here -->
+                <div class="loading-spinner">
+                    <i class="fas fa-spinner fa-spin"></i> Loading blog content...
+                </div>
+            </div>
+            
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div id="comment-form-container">
+                    <!-- Only shown to logged-in users -->
+                    <div class="comment-form" style="display: none;">
+                        <div class="input-group">
+                            <textarea id="comment-content" placeholder="Write your comment..." required></textarea>
+                            <div class="form-actions">
+                                <div class="emoji-container">
+                                    <button class="emoji-btn"><i class="far fa-smile"></i></button>
+                                    <div id="emoji-picker" style="display: none; position: absolute; z-index: 100;"></div>
+                                </div>
+                                <div class="image-upload">
+                                    <input type="file" id="image-input" accept="image/*" style="display: none;">
+                                    <button class="image-btn"><i class="far fa-image"></i></button>
+                                </div>
+                                <button id="post-comment" class="post-btn">Post Comment</button>
+                            </div>
+                            <div id="image-preview" class="image-preview" style="display: none;">
+                                <img id="preview-img" src="" alt="Preview">
+                                <button class="remove-image"><i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="login-prompt" id="login-to-comment">
+                        <p>Please <a href="/login">log in</a> to add a comment.</p>
+                    </div>
+                </div>
+                
+                <div id="comments-container">
+                    <!-- Comments will be loaded here -->
+                </div>
+                
+                <!-- Load more comments button -->
+                <div class="load-more-container">
+                    <button id="load-more-comments" class="load-more-btn" style="display: none;">
+                        <i class="fas fa-spinner fa-spin" style="display: none;"></i> 
+                        <span>Load More Comments</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let currentPage = 1;
+        let totalPages = 1;
+        let isLoading = false;
+        let blogId = null;
+        let commentsPerPage = 4; // Show 4 comments per page
+
+        $(document).ready(async function() {
+            // Get blog ID from URL
+            blogId = window.location.pathname.split('/').pop();
+            
+            // Check if user is logged in
+            try {
+                const userResponse = await fetch('/api/user');
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    currentUser = userData.user;
+                    
+                    // Show logged in UI
+                    $('#username-display').text(`${currentUser.username} (${currentUser.role})`);
+                    $('#logout-btn').show();
+                    $('#login-btn').hide();
+                    $('#dashboard-link').show();
+                    $('#home-link').hide();
+                    
+                    // Show comment form for logged in users
+                    $('.comment-form').show();
+                    $('#login-to-comment').hide();
+                } else {
+                    // Handle visitor view
+                    $('#logout-btn').hide();
+                    $('#login-btn').show();
+                    $('#dashboard-link').hide();
+                    $('#home-link').show();
+                    $('.comment-form').hide();
+                    $('#login-to-comment').show();
+                }
+            } catch (error) {
+                console.log('User not logged in');
+                // Ensure visitor UI is shown
+                $('#logout-btn').hide();
+                $('#login-btn').show();
+                $('#dashboard-link').hide();
+                $('#home-link').show();
+                $('.comment-form').hide();
+                $('#login-to-comment').show();
+            }
+            
+            // Load blog content
+            loadBlog();
+            
+            // Load comments
+            loadComments(1, false);
+            
+            // Setup comment form if user is logged in
+            if (currentUser) {
+                setupEmojiPicker();
+                setupImageUpload();
+                $('#post-comment').on('click', postComment);
+            }
+            
+            // Setup logout button
+            $('#logout-btn').on('click', async function() {
+                await fetch('/api/logout', { method: 'POST' });
+                window.location.reload();
+            });
+            
+            // Setup load more comments button
+            $('#load-more-comments').on('click', function() {
+                if (isLoading || currentPage >= totalPages) return;
+                loadComments(currentPage + 1, true);
+            });
+            
+            // Event delegation for comment actions
+            $('#comments-container').on('click', '.edit-comment-btn', function() {
+                if (!currentUser) return;
+                const commentId = $(this).data('comment-id');
+                editComment(commentId);
+            });
+            
+            $('#comments-container').on('click', '.delete-comment-btn', function() {
+                if (!currentUser) return;
+                const commentId = $(this).data('comment-id');
+                deleteComment(commentId);
+            });
+            
+            $('#comments-container').on('click', '.save-edit-btn', function() {
+                if (!currentUser) return;
+                const commentId = $(this).data('comment-id');
+                saveEdit(commentId);
+            });
+            
+            $('#comments-container').on('click', '.cancel-edit-btn', function() {
+                const commentId = $(this).data('comment-id');
+                cancelEdit(commentId);
+            });
+            
+            $('#comments-container').on('click', '.reply-btn', function() {
+                if (!currentUser) {
+                    alert('Please log in to reply');
+                    return;
+                }
+                const commentId = $(this).data('comment-id');
+                const replyId = $(this).data('reply-id');
+                showReplyForm(commentId, replyId);
+            });
+            
+            $('#comments-container').on('click', '.post-reply-btn', function() {
+                if (!currentUser) return;
+                const commentId = $(this).data('comment-id');
+                const replyId = $(this).data('reply-id');
+                postReply(commentId, replyId);
+            });
+            
+            $('#comments-container').on('click', '.edit-reply-btn', function() {
+                if (!currentUser) return;
+                const commentId = $(this).data('comment-id');
+                const replyId = $(this).data('reply-id');
+                editReply(commentId, replyId);
+            });
+            
+            $('#comments-container').on('click', '.save-reply-edit-btn', function() {
+                if (!currentUser) return;
+                const commentId = $(this).data('comment-id');
+                const replyId = $(this).data('reply-id');
+                saveReplyEdit(commentId, replyId);
+            });
+            
+            $('#comments-container').on('click', '.cancel-reply-edit-btn', function() {
+                const replyId = $(this).data('reply-id');
+                cancelReplyEdit(replyId);
+            });
+            
+            $('#comments-container').on('click', '.delete-reply-btn', function() {
+                if (!currentUser) return;
+                const commentId = $(this).data('comment-id');
+                const replyId = $(this).data('reply-id');
+                deleteReply(commentId, replyId);
+            });
+            
+            $('#comments-container').on('click', '.like-btn', function() {
+                if (!currentUser) {
+                    alert('Please log in to like comments');
+                    return;
+                }
+                const commentId = $(this).data('comment-id');
+                likeComment(commentId);
+            });
+        });
+
+        async function loadBlog() {
+            try {
+                const response = await fetch(`/api/blogs/${blogId}`);
+                if (!response.ok) {
+                    window.location.href = '/';
+                    return;
+                }
+                
+                const { blog } = await response.json();
+                
+                // Update page title
+                document.title = `${blog.title} - PenScribe`;
+                
+                // Render blog content
+                const blogContainer = document.getElementById('blog-content-container');
+                blogContainer.innerHTML = `
+                    <h2 class="blog-title">${escapeHtml(blog.title)}</h2>
+                    <div class="blog-meta">
+                        <span class="blog-author"><i class="fas fa-user"></i> ${escapeHtml(blog.author_name)}</span>
+                        <span class="blog-date"><i class="fas fa-calendar"></i> ${formatDate(blog.created_at)}</span>
+                    </div>
+                    <div class="blog-content">
+                        ${blog.content}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading blog:', error);
+                document.getElementById('blog-content-container').innerHTML = `
+                    <div class="error-message">Error loading blog content. Please try again later.</div>
+                `;
+            }
+        }
+
+        async function loadComments(page = 1, append = false) {
+            if (isLoading) return;
+            isLoading = true;
+            
+            const loadMoreBtn = $('#load-more-comments');
+            const spinner = loadMoreBtn.find('.fa-spinner');
+            const btnText = loadMoreBtn.find('span');
+            
+            try {
+                // Show loading state
+                loadMoreBtn.addClass('loading');
+                spinner.show();
+                btnText.text('Loading...');
+                
+                const response = await fetch(`/api/blogs/${blogId}/comments?page=${page}&limit=${commentsPerPage}`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch comments');
+                }
+                
+                const data = await response.json();
+                const container = document.getElementById('comments-container');
+                
+                if (!append) {
+                    container.innerHTML = '';
+                }
+                
+                if (!data.comments || !Array.isArray(data.comments)) {
+                    console.error('Invalid comments data received:', data);
+                    container.innerHTML = '<p class="error-message">Error loading comments. Please try again later.</p>';
+                    return;
+                }
+                
+                if (data.comments.length === 0 && page === 1) {
+                    container.innerHTML = '<p class="no-content">No comments yet. Be the first to comment!</p>';
+                    loadMoreBtn.hide();
+                    isLoading = false;
+                    return;
+                }
+                
+                // Process each comment and ensure it has proper structure
+                data.comments.forEach(comment => {
+                    // Add the comment element to the container
+                    container.appendChild(createCommentElement(comment));
+                });
+
+                currentPage = data.pagination.page;
+                totalPages = data.pagination.totalPages;
+                
+                // Update load more button visibility
+                if (currentPage < totalPages) {
+                    loadMoreBtn.show();
+                } else {
+                    loadMoreBtn.hide();
+                }
+                
+                initializeLazyLoading();
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                if (page === 1) {
+                    $('#comments-container').html(`
+                        <div class="error-message">Error loading comments. Please try again later.</div>
+                    `);
+                }
+            } finally {
+                // Reset loading state
+                isLoading = false;
+                loadMoreBtn.removeClass('loading');
+                spinner.hide();
+                btnText.text('Load More Comments');
+            }
+        }
+
+        function createCommentElement(comment) {
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'comment';
+            commentDiv.setAttribute('data-comment-id', comment.id);
+
+            let imageHtml = '';
+            if (comment.image) {
+                imageHtml = `
+                    <div class="comment-image">
+                        <img data-src="${comment.image}" alt="Comment image" loading="lazy">
+                    </div>
+                `;
+            }
+
+            const isOwner = currentUser && comment.user_id === currentUser.id;
+            const actionButtons = isOwner ? `
+                <div class="comment-owner-actions">
+                    <button class="edit-comment-btn" data-comment-id="${comment.id}">Edit</button>
+                    <button class="delete-comment-btn" data-comment-id="${comment.id}">Delete</button>
+                </div>
+            ` : '';
+
+            // Ensures replies array exists and is processed correctly
+            const replies = Array.isArray(comment.replies) ? comment.replies : [];
+
+            commentDiv.innerHTML = `
+                <div class="comment-header">
+                    <span class="comment-author">${escapeHtml(comment.username)}</span>
+                    <span class="comment-timestamp">${formatTimestamp(comment.timestamp)}</span>
+                </div>
+                <div class="comment-content" id="content-${comment.id}">${escapeHtml(comment.content)}</div>
+                ${imageHtml}
+                <div class="comment-actions">
+                    <div class="comment-action like-btn" data-comment-id="${comment.id}">
+                        <i class="far fa-thumbs-up"></i>
+                        <span>${comment.likes || 0} Likes</span>
+                    </div>
+                    <div class="comment-action reply-btn" data-comment-id="${comment.id}">
+                        <i class="far fa-comment"></i>
+                        <span>Reply</span>
+                    </div>
+                    ${actionButtons}
+                </div>
+                <div id="edit-form-${comment.id}" class="edit-form" style="display: none;">
+                    <textarea id="edit-content-${comment.id}">${escapeHtml(comment.content)}</textarea>
+                    <button class="save-edit-btn" data-comment-id="${comment.id}">Save</button>
+                    <button class="cancel-edit-btn" data-comment-id="${comment.id}">Cancel</button>
+                </div>
+                <div id="reply-form-${comment.id}" style="display: none;">
+                    <div class="input-group">
+                        <textarea id="reply-content-${comment.id}" placeholder="Write your reply..." required></textarea>
+                        <button class="post-reply-btn" data-comment-id="${comment.id}">Reply</button>
+                    </div>
+                </div>
+                <div class="replies" id="replies-${comment.id}">
+                    ${replies.map(reply => createReplyElement(reply, comment.id)).join('')}
+                </div>
+            `;
+            return commentDiv;
+        }
+
+        function createReplyElement(reply, commentId) {
+            const isOwner = currentUser && reply.user_id === currentUser.id;
+            
+            const actionButtons = isOwner ? `
+                <div class="reply-owner-actions">
+                    <button class="edit-reply-btn" data-comment-id="${commentId}" data-reply-id="${reply.id}">Edit</button>
+                    <button class="delete-reply-btn" data-comment-id="${commentId}" data-reply-id="${reply.id}">Delete</button>
+                </div>
+            ` : '';
+
+            // Process nested replies if they exist 
+            let nestedRepliesHtml = '';
+            if (reply.nested_replies && Array.isArray(reply.nested_replies) && reply.nested_replies.length > 0) {
+                nestedRepliesHtml = `<div class="nested-replies">
+                    ${reply.nested_replies.map(nestedReply => 
+                        createReplyElement(nestedReply, commentId)
+                    ).join('')}
+                </div>`;
+            }
+
+            return `
+                <div class="comment reply" data-reply-id="${reply.id}">
+                    <div class="comment-header">
+                        <span class="comment-author">${escapeHtml(reply.username)}</span>
+                        <span class="comment-timestamp">${formatTimestamp(reply.timestamp)}</span>
+                    </div>
+                    <div class="comment-content" id="reply-content-${reply.id}">${escapeHtml(reply.content)}</div>
+                    <div class="comment-actions">
+                        <div class="comment-action reply-btn" data-comment-id="${commentId}" data-reply-id="${reply.id}">
+                            <i class="far fa-comment"></i>
+                            <span>Reply</span>
+                        </div>
+                        ${actionButtons}
+                    </div>
+                    <div id="edit-reply-form-${reply.id}" class="edit-form" style="display: none;">
+                        <textarea id="edit-reply-content-${reply.id}">${escapeHtml(reply.content)}</textarea>
+                        <button class="save-reply-edit-btn" data-comment-id="${commentId}" data-reply-id="${reply.id}">Save</button>
+                        <button class="cancel-reply-edit-btn" data-reply-id="${reply.id}">Cancel</button>
+                    </div>
+                    <div id="reply-form-${commentId}-${reply.id}" style="display: none;">
+                        <div class="input-group">
+                            <textarea id="reply-content-${commentId}-${reply.id}" placeholder="Write your reply..." required></textarea>
+                            <button class="post-reply-btn" data-comment-id="${commentId}" data-reply-id="${reply.id}">Reply</button>
+                        </div>
+                    </div>
+                    ${nestedRepliesHtml}
+                </div>
+            `;
+        }
+
+        async function postComment() {
+            if (!currentUser) {
+                alert('Please log in to comment');
+                return;
+            }
+            
+            const content = $('#comment-content').val();
+            const imageInput = document.getElementById('image-input');
+
+            if (!content) {
+                alert('Please write a comment');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('content', content);
+            if (imageInput.files[0]) {
+                formData.append('image', imageInput.files[0]);
+            }
+
+            try {
+                const response = await fetch(`/api/blogs/${blogId}/comments`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    $('#comment-content').val('');
+                    imageInput.value = '';
+                    $('#image-preview').hide();
+                    // Reset to page 1 to show the newest comment
+                    loadComments(1, false);
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error posting comment');
+                }
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                alert('Error posting comment');
+            }
+        }
+
+        async function postReply(commentId, parentReplyId) {
+            if (!currentUser) {
+                alert('Please log in to reply');
+                return;
+            }
+            
+            const contentId = parentReplyId ? 
+                `reply-content-${commentId}-${parentReplyId}` : 
+                `reply-content-${commentId}`;
+            const formId = parentReplyId ? 
+                `reply-form-${commentId}-${parentReplyId}` : 
+                `reply-form-${commentId}`;
+
+            const content = $(`#${contentId}`).val();
+
+            if (!content) {
+                alert('Please write a reply');
+                return;
+            }
+
+            try {
+                const endpoint = parentReplyId ? 
+                    `/api/replies/${parentReplyId}/replies` : 
+                    `/api/comments/${commentId}/replies`;
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                if (response.ok) {
+                    $(`#${contentId}`).val('');
+                    $(`#${formId}`).hide();
+                    
+                    // After posting a reply, fetch the specific comment to update the UI
+                    try {
+                        const commentResponse = await fetch(`/api/comments/${commentId}`);
+                        if (commentResponse.ok) {
+                            const data = await commentResponse.json();
+                            
+                            // Handle both possible API response formats
+                            const comment = data.comment || data;
+                            
+                            // Replace the entire comment element to ensure all replies are displayed
+                            $(`.comment[data-comment-id="${commentId}"]`).replaceWith(
+                                createCommentElement(comment)
+                            );
+                            
+                            // Re-initialize lazy loading for any images
+                            initializeLazyLoading();
+                        } else {
+                            // If we can't get the specific comment, reload the page
+                            console.error('Failed to fetch updated comment. Reloading comments.');
+                            loadComments(currentPage, false);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching updated comment:', error);
+                        alert('Your reply was posted, but we had trouble displaying it. Refreshing comments...');
+                        loadComments(currentPage, false);
+                    }
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error posting reply');
+                }
+            } catch (error) {
+                console.error('Error posting reply:', error);
+                alert('Error posting reply');
+            }
+        }
+
+        function setupEmojiPicker() {
+            // If the emoji-mart library is loaded
+            if (typeof EmojiMart !== 'undefined' && EmojiMart.Picker) {
+                const picker = new EmojiMart.Picker({
+                    onEmojiSelect: (emoji) => {
+                        const commentInput = document.getElementById('comment-content');
+                        const cursorPos = commentInput.selectionStart;
+                        const text = commentInput.value;
+                        const beforeCursor = text.substring(0, cursorPos);
+                        const afterCursor = text.substring(cursorPos);
+                        commentInput.value = beforeCursor + emoji.native + afterCursor;
+                        document.getElementById('emoji-picker').style.display = 'none';
+                    }
+                });
+
+                document.getElementById('emoji-picker').appendChild(picker);
+
+                document.querySelector('.emoji-btn').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const emojiPicker = document.getElementById('emoji-picker');
+                    emojiPicker.style.display = emojiPicker.style.display === 'none' ? 'block' : 'none';
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.emoji-container')) {
+                        document.getElementById('emoji-picker').style.display = 'none';
+                    }
+                });
+            } else {
+                console.warn('Emoji Mart library not available');
+                // Hide emoji button if the library isn't available
+                document.querySelector('.emoji-btn').style.display = 'none';
+            }
+        }
+
+        function setupImageUpload() {
+            const imageBtn = document.querySelector('.image-btn');
+            const imageInput = document.getElementById('image-input');
+            const imagePreview = document.getElementById('image-preview');
+            const previewImg = document.getElementById('preview-img');
+            const removeImageBtn = document.querySelector('.remove-image');
+
+            imageBtn.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            imageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewImg.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            removeImageBtn.addEventListener('click', () => {
+                imageInput.value = '';
+                imagePreview.style.display = 'none';
+            });
+        }
+
+        function editComment(commentId) {
+            $(`#content-${commentId}`).hide();
+            $(`#edit-form-${commentId}`).show();
+        }
+
+        async function saveEdit(commentId) {
+            const content = $(`#edit-content-${commentId}`).val();
+            
+            try {
+                const response = await fetch(`/api/comments/${commentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                if (response.ok) {
+                    // Update the comment content in the DOM
+                    $(`#content-${commentId}`).text(content);
+                    cancelEdit(commentId);
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error editing comment');
+                }
+            } catch (error) {
+                console.error('Error editing comment:', error);
+                alert('Error editing comment');
+            }
+        }
+
+        function cancelEdit(commentId) {
+            $(`#content-${commentId}`).show();
+            $(`#edit-form-${commentId}`).hide();
+        }
+
+        async function deleteComment(commentId) {
+            if (!confirm('Are you sure you want to delete this comment?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/comments/${commentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Remove the comment from the DOM
+                    $(`.comment[data-comment-id="${commentId}"]`).remove();
+                    
+                    // If we've deleted a comment and the page looks empty, reload comments
+                    if ($('#comments-container').children().length < 2) {
+                        loadComments(currentPage > 1 ? currentPage - 1 : 1, false);
+                    }
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error deleting comment');
+                }
+            } catch (error) {
+                console.error('Error deleting comment:', error);
+                alert('Error deleting comment');
+            }
+        }
+
+        function showReplyForm(commentId, replyId) {
+            if (!currentUser) {
+                alert('Please log in to reply');
+                return;
+            }
+            
+            const formId = replyId ? `reply-form-${commentId}-${replyId}` : `reply-form-${commentId}`;
+            $(`#${formId}`).toggle();
+        }
+
+        function editReply(commentId, replyId) {
+            $(`#reply-content-${replyId}`).hide();
+            $(`#edit-reply-form-${replyId}`).show();
+        }
+
+        async function saveReplyEdit(commentId, replyId) {
+            const content = $(`#edit-reply-content-${replyId}`).val();
+            
+            try {
+                const response = await fetch(`/api/replies/${replyId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                if (response.ok) {
+                    // Update the reply content in the DOM
+                    $(`#reply-content-${replyId}`).text(content);
+                    cancelReplyEdit(replyId);
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error editing reply');
+                }
+            } catch (error) {
+                console.error('Error editing reply:', error);
+                alert('Error editing reply');
+            }
+        }
+
+        function cancelReplyEdit(replyId) {
+            $(`#reply-content-${replyId}`).show();
+            $(`#edit-reply-form-${replyId}`).hide();
+        }
+
+        async function deleteReply(commentId, replyId) {
+            if (!confirm('Are you sure you want to delete this reply?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/replies/${replyId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // After successful deletion, fetch the updated comment
+                    try {
+                        const commentResponse = await fetch(`/api/comments/${commentId}`);
+                        if (commentResponse.ok) {
+                            const data = await commentResponse.json();
+                            
+                            // Handle both possible API response formats
+                            const comment = data.comment || data;
+                            
+                            // Replace the entire comment element to ensure all replies are displayed correctly
+                            $(`.comment[data-comment-id="${commentId}"]`).replaceWith(
+                                createCommentElement(comment)
+                            );
+                        } else {
+                            // Just remove this specific reply if we can't get the updated comment
+                            $(`.reply[data-reply-id="${replyId}"]`).remove();
+                        }
+                    } catch (error) {
+                        console.error('Error fetching updated comment after reply deletion:', error);
+                        // Just remove this specific reply
+                        $(`.reply[data-reply-id="${replyId}"]`).remove();
+                    }
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error deleting reply');
+                }
+            } catch (error) {
+                console.error('Error deleting reply:', error);
+                alert('Error deleting reply');
+            }
+        }
+
+        async function likeComment(commentId) {
+            try {
+                const response = await fetch(`/api/comments/${commentId}/like`, {
+                    method: 'PUT'
+                });
+
+                if (response.ok) {
+                    // Update the like count without reloading all comments
+                    const likeElement = $(`.like-btn[data-comment-id="${commentId}"] span`);
+                    const currentLikes = parseInt(likeElement.text()) || 0;
+                    likeElement.text(`${currentLikes + 1} Likes`);
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Error liking comment');
+                }
+            } catch (error) {
+                console.error('Error liking comment:', error);
+                alert('Error liking comment');
+            }
+        }
+
+        function initializeLazyLoading() {
+            if ('IntersectionObserver' in window) {
+                const images = document.querySelectorAll('.comment-image img[data-src]');
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+
+                images.forEach(img => imageObserver.observe(img));
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                document.querySelectorAll('.comment-image img[data-src]').forEach(img => {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                });
+            }
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffInMinutes = Math.floor((now - date) / 1000 / 60);
+
+            if (diffInMinutes < 1) {
+                return 'Just now';
+            } else if (diffInMinutes < 60) {
+                return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
+            } else if (diffInMinutes < 1440) {
+                const hours = Math.floor(diffInMinutes / 60);
+                return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+            } else {
+                const days = Math.floor(diffInMinutes / 1440);
+                return `${days} day${days === 1 ? '' : 's'} ago`;
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

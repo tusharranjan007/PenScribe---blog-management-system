@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PenScribe</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+        
+        header h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        #username-display {
+            font-weight: 600;
+            color: #2c3e50;
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+        
+        /* Blog grid styling */
+        .blogs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .blog-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .blog-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .blog-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        
+        .blog-excerpt {
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 15px;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        
+        .blog-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+        
+        /* Button styling */
+        .action-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .create-blog-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .create-blog-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .read-btn {
+            background-color: #f5f7fa;
+            color: #3498db;
+            border: 1px solid #e6e9ed;
+        }
+        
+        .read-btn:hover {
+            background-color: #edf2f7;
+        }
+        
+        .edit-btn {
+            background-color: #f5f7fa;
+            color: #f39c12;
+            border: 1px solid #e6e9ed;
+        }
+        
+        .edit-btn:hover {
+            background-color: #fef9e7;
+        }
+        
+        .delete-btn {
+            background-color: #f5f7fa;
+            color: #e74c3c;
+            border: 1px solid #e6e9ed;
+        }
+        
+        .delete-btn:hover {
+            background-color: #fdedec;
+        }
+        
+        /* Section headings */
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-heading h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin: 0;
+        }
+        
+        /* Sort controls */
+        .sort-controls {
+            margin-bottom: 30px;
+        }
+        
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sort-options span {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+        
+        .sort-btn {
+            padding: 6px 15px;
+            background-color: #f7f9fa;
+            border: 1px solid #e6e9ed;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .sort-btn.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        /* Load more button */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .load-more-btn {
+            background-color: #f7f9fa;
+            color: #3498db;
+            border: 1px solid #e6e9ed;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .load-more-btn:hover {
+            background-color: #edf2f7;
+            transform: translateY(-2px);
+        }
+        
+        .load-more-btn.loading {
+            background-color: #edf2f7;
+            color: #7f8c8d;
+            pointer-events: none;
+        }
+        
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background-color: #f9fafb;
+            border-radius: 10px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+        
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PenScribe</h1>
+            <div class="user-info">
+                <span id="username-display"></span>
+                <button id="logout-btn" class="action-button delete-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </header>
+        
+        <div class="dashboard-controls">
+            <!-- Author-only section (will be hidden for readers) -->
+            <div id="author-controls" style="display: none;">
+                <a href="/create-blog" class="action-button create-blog-btn"><i class="fas fa-plus"></i> Create New Blog</a>
+                
+                <div class="section-heading">
+                    <h2>My Blogs</h2>
+                </div>
+                
+                <div id="my-blogs-container" class="blogs-grid"></div>
+            </div>
+            
+            <!-- For all users -->
+            <div class="sort-controls">
+                <div class="section-heading">
+                    <h2>All Blogs</h2>
+                    <div class="sort-options">
+                        <span>Sort by:</span>
+                        <button id="sort-date" class="sort-btn active">Date</button>
+                        <button id="sort-comments" class="sort-btn">Comments</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="blogs-container" class="blogs-grid"></div>
+        
+        <!-- Load more button (hidden initially) -->
+        <div class="load-more-container">
+            <button id="load-more" class="load-more-btn" style="display: none;">
+                <i class="fas fa-spinner fa-spin" style="display: none;"></i> 
+                <span>Load More Blogs</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentUser = null;
+        let currentPage = 1;
+        let totalPages = 1;
+        let isLoading = false;
+        let sortBy = 'date';
+        let blogsPerPage = 6; // Show 6 blogs per page
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            try {
+                const userResponse = await fetch('/api/user');
+                if (!userResponse.ok) {
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                const { user } = await userResponse.json();
+                currentUser = user;
+                
+                // Display username
+                document.getElementById('username-display').textContent = `${user.username} (${user.role})`;
+                
+                // Show author controls if user is an author
+                if (user.role === 'author') {
+                    document.getElementById('author-controls').style.display = 'block';
+                    loadMyBlogs(user.id);
+                }
+                
+                // Load all blogs (default sort by date)
+                loadBlogs(1, sortBy);
+                
+                // Setup sort buttons
+                const sortDateBtn = document.getElementById('sort-date');
+                const sortCommentsBtn = document.getElementById('sort-comments');
+                
+                sortDateBtn.addEventListener('click', () => {
+                    if (isLoading) return;
+                    
+                    sortDateBtn.classList.add('active');
+                    sortCommentsBtn.classList.remove('active');
+                    sortBy = 'date';
+                    currentPage = 1;
+                    loadBlogs(1, sortBy, true);
+                });
+                
+                sortCommentsBtn.addEventListener('click', () => {
+                    if (isLoading) return;
+                    
+                    sortCommentsBtn.classList.add('active');
+                    sortDateBtn.classList.remove('active');
+                    sortBy = 'comments';
+                    currentPage = 1;
+                    loadBlogs(1, sortBy, true);
+                });
+                
+                // Setup load more button
+                document.getElementById('load-more').addEventListener('click', () => {
+                    if (isLoading || currentPage >= totalPages) return;
+                    
+                    loadBlogs(currentPage + 1, sortBy);
+                });
+                
+                // Setup logout button
+                document.getElementById('logout-btn').addEventListener('click', async () => {
+                    await fetch('/api/logout', { method: 'POST' });
+                    window.location.href = '/login';
+                });
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                window.location.href = '/login';
+            }
+        });
+        
+        async function loadBlogs(page = 1, sortBy = 'date', reset = false) {
+            if (isLoading) return;
+            isLoading = true;
+            
+            const loadMoreBtn = document.getElementById('load-more');
+            const spinner = loadMoreBtn.querySelector('.fa-spinner');
+            const btnText = loadMoreBtn.querySelector('span');
+            
+            try {
+                // Show loading state
+                loadMoreBtn.classList.add('loading');
+                spinner.style.display = 'inline-block';
+                btnText.textContent = 'Loading...';
+                
+                // Make API request with limit parameter
+                const response = await fetch(`/api/blogs?sort=${sortBy}&page=${page}&limit=${blogsPerPage}`);
+                const data = await response.json();
+                
+                const blogsContainer = document.getElementById('blogs-container');
+                
+                // Reset container if needed
+                if (reset) {
+                    blogsContainer.innerHTML = '';
+                }
+                
+                if (data.blogs.length === 0 && page === 1) {
+                    // Show empty state
+                    blogsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-newspaper"></i>
+                            <p>No blogs found. Check back later for new content!</p>
+                        </div>
+                    `;
+                    loadMoreBtn.style.display = 'none';
+                    return;
+                }
+                
+                // Append blogs to container
+                data.blogs.forEach(blog => {
+                    blogsContainer.appendChild(createBlogCard(blog, false));
+                });
+                
+                currentPage = page;
+                totalPages = data.pagination ? data.pagination.totalPages : 1;
+                
+                // Update load more button visibility
+                if (currentPage < totalPages) {
+                    loadMoreBtn.style.display = 'block';
+                } else {
+                    loadMoreBtn.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error loading blogs:', error);
+                const blogsContainer = document.getElementById('blogs-container');
+                if (page === 1) {
+                    blogsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Error loading blogs. Please try again later.</p>
+                        </div>
+                    `;
+                }
+            } finally {
+                // Reset loading state
+                isLoading = false;
+                loadMoreBtn.classList.remove('loading');
+                spinner.style.display = 'none';
+                btnText.textContent = 'Load More Blogs';
+            }
+        }
+        
+        async function loadMyBlogs(authorId) {
+            try {
+                const response = await fetch('/api/blogs?sort=date');
+                const data = await response.json();
+                
+                const myBlogsContainer = document.getElementById('my-blogs-container');
+                myBlogsContainer.innerHTML = '';
+                
+                const myBlogs = data.blogs.filter(blog => blog.author_id === authorId);
+                
+                if (myBlogs.length === 0) {
+                    myBlogsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-pencil-alt"></i>
+                            <p>You haven't created any blogs yet. Click "Create New Blog" to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                myBlogs.forEach(blog => {
+                    myBlogsContainer.appendChild(createBlogCard(blog, true));
+                });
+            } catch (error) {
+                console.error('Error loading my blogs:', error);
+                document.getElementById('my-blogs-container').innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Error loading your blogs. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function createBlogCard(blog, isAuthor) {
+            const blogCard = document.createElement('div');
+            blogCard.className = 'blog-card';
+            
+            const formattedDate = new Date(blog.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            blogCard.innerHTML = `
+                <h3 class="blog-title">${escapeHtml(blog.title)}</h3>
+                <div class="blog-meta">
+                    <span class="blog-author"><i class="fas fa-user"></i> ${escapeHtml(blog.author_name)}</span>
+                    <span class="blog-date"><i class="fas fa-calendar"></i> ${formattedDate}</span>
+                    <span class="blog-comments"><i class="fas fa-comments"></i> ${blog.comment_count} comments</span>
+                </div>
+                <div class="blog-excerpt">${getExcerpt(blog.content)}</div>
+                <div class="blog-actions">
+                    <a href="/blog/${blog.id}" class="action-button read-btn"><i class="fas fa-eye"></i> Read</a>
+                    ${isAuthor ? `
+                        <a href="/edit-blog/${blog.id}" class="action-button edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                        <button onclick="deleteBlog(${blog.id})" class="action-button delete-btn"><i class="fas fa-trash"></i> Delete</button>
+                    ` : ''}
+                </div>
+            `;
+            
+            return blogCard;
+        }
+        
+        async function deleteBlog(blogId) {
+            if (!confirm('Are you sure you want to delete this blog?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/blogs/${blogId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // Reload blogs after deletion
+                    loadMyBlogs(currentUser.id);
+                    loadBlogs(1, sortBy, true);
+                } else {
+                    const data = await response.json();
+                    alert(data.error || 'Failed to delete blog');
+                }
+            } catch (error) {
+                console.error('Error deleting blog:', error);
+                alert('Error deleting blog');
+            }
+        }
+        
+        function getExcerpt(content) {
+            // Remove HTML tags and get plain text
+            const textContent = content.replace(/<[^>]*>/g, '');
+            // Limit to 200 characters
+            return escapeHtml(textContent.length > 200 ? textContent.substring(0, 200) + '...' : textContent);
+        }
+        
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
